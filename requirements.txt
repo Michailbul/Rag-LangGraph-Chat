@@ -1,9 +1,12 @@
 langchain
 langchain-community
-llama_parse
-llama_index
+llama-parse
+llama-index
 langgraph
 python-dotenv
 textwrap3
 streamlit
 boto3
+llama-index-llms-openai
+llama-index-core
+llama-index-embeddings-openai

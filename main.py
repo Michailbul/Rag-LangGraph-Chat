@@ -21,25 +21,27 @@ load_dotenv()
 
 def main():
 
+
+
     cred.setup_environment()
 
     s3_client = cred.get_s3_client()
     bucket_name = cred.get_bucket_name()
 
-    st.title("Multi-PDF ChatBot using LLAMA3 & Adaptive RAG")
+    st.title("Multi PDF Chat with financial data")
 
 
     # Initialize session state for chat history and file paths
     if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [AIMessage(content="Hello, I am your assistant. How can I help you?", response_metadata={"source": "AI"})]
+        st.session_state.chat_history = [AIMessage(content="Hello, I am your assistant. How can I help you?")]
     if "file_paths" not in st.session_state:
         st.session_state.file_paths = []  # Initialize file_paths in session state
     if "agent" not in st.session_state:
         st.session_state.agent = None
 
 
-    st.markdown("SESSIOIN STATE")
-    st.write(st.session_state)
+    
+    
 
     with st.sidebar:
         st.subheader("Your documents")
@@ -75,7 +77,7 @@ def main():
     for message in st.session_state.chat_history:
         if isinstance(message, AIMessage):
             with st.chat_message("AI"):
-                st.write(message.content, message.response_metadata)
+                st.write(message.content)
             
         elif isinstance(message, HumanMessage):
             with st.chat_message("Human"):

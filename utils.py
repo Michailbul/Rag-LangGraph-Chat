@@ -8,7 +8,6 @@ from llama_index.core.tools import QueryEngineTool
 from llama_index.core.query_engine.router_query_engine import RouterQueryEngine
 from llama_parse import LlamaParse
 
-from pprint import pprint
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, SummaryIndex
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.tools import FunctionTool, QueryEngineTool
@@ -20,8 +19,6 @@ import textwrap
 import os 
 import logging
 
-Settings.llm = OpenAI(model="gpt-3.5-turbo")
-Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 
 def create_nodes(file_path):
 
@@ -41,14 +38,8 @@ def create_nodes(file_path):
 
     file_extractor = {".pdf": parser}
 
-
-    logging.warning(f"__________________________ PROCESSING DOCUMENTS ______________________")
-
-
     # load documents
     documents = SimpleDirectoryReader(input_files=[file_path], file_extractor=file_extractor ).load_data()
-
-    logging.info(f"documents {documents}")
 
 
     splitter = SentenceSplitter(chunk_size=1024)
