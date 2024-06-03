@@ -138,7 +138,7 @@ def transform_query(state):
     print("---TRANSFORM QUERY---")
     question = state["question"]
     documents = state["documents"]
-    original_answer = state['answer']
+    original_answer = state['generation']
 
     # Re-write question
     better_question = question_rewriter.invoke({"question": question, "context": documents, "answer": original_answer})
