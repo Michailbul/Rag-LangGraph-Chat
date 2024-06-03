@@ -13,9 +13,9 @@ LangGraph ChatBot is a Streamlit-based web application that integrates LLMs to i
 Create an `.env` file in the root of the project directory with the necessary environment variables:
 
 
-OPENAI_API_KEY=sk-proj-yourkey
-LLAMA_PARSE=llx-yourkey
-LANGCHAIN_API_KEY=lsv2_yourkey (if want to track the trace)
+OPENAI_API_KEY=sk-proj-yourkey \n
+LLAMA_PARSE=llx-yourkey \n
+LANGCHAIN_API_KEY=lsv2_yourkey (if want to track the trace) \n
 
 
 
@@ -38,13 +38,13 @@ The application is dockerized for easy deployment and isolation.
 Building the Docker Image
 Build the Docker image using the following command:
 
-docker build -t langgraph-chatbot .
+`docker build -t langgraph-chatbot .`
 
 ## Running the Application
 To run the application, execute:
 
 
-`docker run -d -p 8083:8083 --env-file .env --name langgraph-chatbot langgraph-chatbot`
+`ddocker run -it -p 8083:8083 --env-file .env --name langgraph-chatbot langgraph-chatbot`
 
 
 
