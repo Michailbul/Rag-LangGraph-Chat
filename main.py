@@ -21,12 +21,12 @@ load_dotenv()
 
 def main():
 
-
+    add_custom_css()
 
     cred.setup_environment()
 
-    s3_client = cred.get_s3_client()
-    bucket_name = cred.get_bucket_name()
+    # s3_client = cred.get_s3_client()
+    # bucket_name = cred.get_bucket_name()
 
     st.title("Multi PDF Chat with financial data")
 
@@ -39,9 +39,6 @@ def main():
     if "agent" not in st.session_state:
         st.session_state.agent = None
 
-
-    
-    
 
     with st.sidebar:
         st.subheader("Your documents")
@@ -77,14 +74,35 @@ def main():
     for message in st.session_state.chat_history:
         if isinstance(message, AIMessage):
             with st.chat_message("AI"):
-                st.write(message.content)
+                st.markdown(message.content)
             
         elif isinstance(message, HumanMessage):
             with st.chat_message("Human"):
-                st.write(message.content)
+                st.markdown(message.content)
 
 
     
+def add_custom_css():
+    custom_css = """
+    <style>
+    .stMarkdown p {
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    .stChatMessage {
+        font-family: 'Arial', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    </style>
+    """
+    st.markdown(custom_css, unsafe_allow_html=True)
+
 
 def handle_user_input(user_question):
     # Query the pre-initialized agent for a response
@@ -106,7 +124,7 @@ def handle_user_input(user_question):
 
 def setup_agent(uploaded_files):
 
-    llm = OpenAI(model="gpt-3.5-turbo", temperature=0)
+    llm = OpenAI(model="gpt-4-turbo", temperature=0)
 
     temp_dir = './temp/'
     if not os.path.exists(temp_dir):
@@ -125,6 +143,10 @@ def setup_agent(uploaded_files):
 
 def save_file(uploaded_file, temp_dir):
     file_path = os.path.join(temp_dir, uploaded_file.name)
+    # Check if the file already exists and delete it if it does
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        logging.info(f"Deleted existing file: {file_path}")
     with open(file_path, "wb") as f:
         f.write(uploaded_file.getvalue())
     logging.info(f"Processed uploaded file: {uploaded_file.name}")

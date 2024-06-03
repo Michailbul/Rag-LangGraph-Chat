@@ -41,7 +41,10 @@ def create_nodes(file_path):
     file_extractor = {".pdf": parser}
     try:
         logging.info(f"Loading file: {file_path}")
-    # load documents
+        # Check if file exists
+        if not os.path.exists(file_path):
+            raise OSError(f"File does not exist: {file_path}")
+        # load documents
         documents = SimpleDirectoryReader(input_files=[file_path], file_extractor=file_extractor ).load_data()
         splitter = SentenceSplitter(chunk_size=1024)
         nodes = splitter.get_nodes_from_documents(documents)
