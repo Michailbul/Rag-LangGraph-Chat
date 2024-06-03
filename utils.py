@@ -19,6 +19,8 @@ import textwrap
 import os 
 import logging
 
+Settings.llm = OpenAI(model="gpt-4o")
+Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 
 def create_nodes(file_path):
 
@@ -37,16 +39,17 @@ def create_nodes(file_path):
         )
 
     file_extractor = {".pdf": parser}
-
+    try:
+        logging.info(f"Loading file: {file_path}")
     # load documents
-    documents = SimpleDirectoryReader(input_files=[file_path], file_extractor=file_extractor ).load_data()
+        documents = SimpleDirectoryReader(input_files=[file_path], file_extractor=file_extractor ).load_data()
+        splitter = SentenceSplitter(chunk_size=1024)
+        nodes = splitter.get_nodes_from_documents(documents)
+        return nodes
+    except OSError as e:
+        logging.error(f"Error loading file {file_path}: {e}")
+        raise
 
-
-    splitter = SentenceSplitter(chunk_size=1024)
-    nodes = splitter.get_nodes_from_documents(documents)
-    
-    
-    return nodes
 
 
 
