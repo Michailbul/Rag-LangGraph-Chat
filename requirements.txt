@@ -1,0 +1,9 @@
+langchain
+langchain-community
+llama_parse
+llama_index
+langgraph
+python-dotenv
+textwrap3
+streamlit
+boto3
