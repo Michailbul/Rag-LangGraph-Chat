@@ -15,7 +15,7 @@ Create an `.env` file in the root of the project directory with the necessary en
 
 OPENAI_API_KEY=sk-proj-yourkey \n
 LLAMA_PARSE=llx-yourkey \n
-LANGCHAIN_API_KEY=lsv2_yourkey (if want to track the trace) \n
+LANGCHAIN_API_KEY=lsv2_yourkey (if want to track the trace. Not necessary for running the app) \n
 
 
 
