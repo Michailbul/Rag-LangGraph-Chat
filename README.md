@@ -44,7 +44,7 @@ Build the Docker image using the following command:
 To run the application, execute:
 
 
-`ddocker run -it -p 8083:8083 --env-file .env --name langgraph-chatbot langgraph-chatbot`
+`docker run -it -p 8083:8083 --env-file .env --name langgraph-chatbot langgraph-chatbot`
 
 
 

@@ -39,10 +39,10 @@ workflow.add_conditional_edges(
         "not useful": "transform_query",   # GENERATION DOES NOT ADDRESS QUESTION
     },
 )
-
-
 workflow.add_edge("transform_query", "retrieve")
+
 workflow.add_edge("generate_rag", "response_enhancer")
+
 
 
 

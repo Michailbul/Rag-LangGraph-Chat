@@ -24,12 +24,22 @@ Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 
 def create_nodes(file_path):
 
-    instruction = """The provided document is a financial report of a large company.
-    This form provides detailed financial information about the company's performance.
-    It includes unaudited financial statements, management discussion and analysis, and other relevant disclosures.
-    It contains many tables.
+
+    instruction = """The provided document is a information about a large company.
+    This form provides detailed  information about the company, its vision, goals, abilities.
+    It includes management, descriptions, and other relevant disclosures.
     Be precise while answering the questions.
     Always provide reasoning over your answer, providing sources and all the relevant information that led to this answer"""
+
+
+
+
+    # instruction = """The provided document is a financial report of a large company.
+    # This form provides detailed financial information about the company's performance.
+    # It includes unaudited financial statements, management discussion and analysis, and other relevant disclosures.
+    # It contains many tables.
+    # Be precise while answering the questions.
+    # Always provide reasoning over your answer, providing sources and all the relevant information that led to this answer"""
 
     parser = LlamaParse(
             api_key=os.environ["LLAMA_PARSE"],
