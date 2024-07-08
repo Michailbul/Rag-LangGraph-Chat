@@ -51,7 +51,7 @@ def main():
     url_list = [url.strip() for url in urls.split('\n') if url.strip()]
 # 
     if process and url_list:
-        st.write(f"Processing {len(url_list)} URLs:")
+        #st.write(f"Processing {len(url_list)} URLs:")
         for url in url_list:
             st.write(url)
 # 
@@ -74,7 +74,7 @@ def main():
 
     # Handle user input and display conversation using chat_message
     user_query = st.chat_input("Type your message here...")
-    st.write(user_query)
+    #st.write(user_query)
     if user_query:
         st.session_state.chat_history.append(HumanMessage(content=user_query))
         if st.session_state.query_engine:
