@@ -26,6 +26,13 @@ share/python-wheels/
 .installed.cfg
 *.egg
 
+
+*.pdf
+temus_urls.txt
+test.ipynb
+urls.txt
+collect_urls.py
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.

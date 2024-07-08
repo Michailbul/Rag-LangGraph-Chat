@@ -16,17 +16,23 @@ from typing import List, Optional
 import textwrap
 
 
+
+
+from llama_index.readers.web import SimpleWebPageReader
+
+
+
 import os 
 import logging
 
-Settings.llm = OpenAI(model="gpt-4o")
+Settings.llm = OpenAI(model="gpt-4-turbo")
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 
 def create_nodes(file_path):
 
 
     instruction = """The provided document is a information about a large company.
-    This form provides detailed  information about the company, its vision, goals, abilities.
+    This form provides detailed  information about the company, its vision, goals, achievements, products.
     It includes management, descriptions, and other relevant disclosures.
     Be precise while answering the questions.
     Always provide reasoning over your answer, providing sources and all the relevant information that led to this answer"""
@@ -62,6 +68,9 @@ def create_nodes(file_path):
     except OSError as e:
         logging.error(f"Error loading file {file_path}: {e}")
         raise
+
+
+    
 
 
 

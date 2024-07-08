@@ -13,6 +13,9 @@ from dotenv import load_dotenv
 from utils import get_doc_tools
 from app.graph.graph import app
 
+from llama_index.readers.web import SimpleWebPageReader
+from llama_index.core import SummaryIndex
+
 load_dotenv()
 
 
@@ -23,10 +26,7 @@ def main():
 
     cred.setup_environment()
 
-    # s3_client = cred.get_s3_client()
-    # bucket_name = cred.get_bucket_name()
-
-    st.title("Multi PDF Chat with financial data")
+    st.title("Chat with URLs")
 
 
     # Initialize session state for chat history and file paths
@@ -34,28 +34,50 @@ def main():
         st.session_state.chat_history = [AIMessage(content="Hello, I am your assistant. How can I help you?")]
     if "file_paths" not in st.session_state:
         st.session_state.file_paths = []  # Initialize file_paths in session state
+    if "urls" not in st.session_state:
+        st.session_state.urls = []
     if "agent" not in st.session_state:
         st.session_state.agent = None
+    if "query_engine" not in st.session_state:
+        st.session_state.query_engine = None
 
 
+
+    #remove later 
     with st.sidebar:
-        st.subheader("Your documents")
-        uploaded_files = st.file_uploader("Upload your files", type=['pdf'], accept_multiple_files=True)
+        st.subheader("Your Links")
+        urls = st.text_area("Enter your URLs (one per line)", height=150)
         process = st.button("Process")
-
-
-    if process:
-        if not uploaded_files:
-            st.warning("Please upload at least one PDF file.")
-        else:
-            setup_agent(uploaded_files)
+    url_list = [url.strip() for url in urls.split('\n') if url.strip()]
+# 
+    if process and url_list:
+        st.write(f"Processing {len(url_list)} URLs:")
+        for url in url_list:
+            st.write(url)
+# 
+    # # Read URLs from file
+    # urls = read_urls_from_file('temus_urls.txt')
+    # st.session_state.urls = urls
+    # url_list = [url.strip() for url in urls if url.strip()]
+    
+    if not url_list:
+        st.warning("Error, no links")
+    else:
+        with st.expander(f"View Processing URLs ({len(url_list)})"):
+        #setup_agent(uploaded_files)
+            st.write(f"Processing {len(url_list)} URLs:")
+            for url in url_list:
+                st.write(url)
+            setup_agent_urls(url_list)
+        #query_engine = process_documents(uploaded_files, url_list)
+    st.write("Agent is set up and ready to answer questions.")
 
     # Handle user input and display conversation using chat_message
     user_query = st.chat_input("Type your message here...")
+    st.write(user_query)
     if user_query:
         st.session_state.chat_history.append(HumanMessage(content=user_query))
-        if st.session_state.agent:
-
+        if st.session_state.query_engine:
 
             response = handle_user_input(user_query)
             answer = response['generation']
@@ -78,7 +100,9 @@ def main():
             with st.chat_message("Human"):
                 st.markdown(message.content)
 
-
+def read_urls_from_file(file_path):
+    with open(file_path, 'r') as file:
+        return [url.strip() for url in file if url.strip()]
     
 def add_custom_css():
     custom_css = """
@@ -104,11 +128,13 @@ def add_custom_css():
 
 def handle_user_input(user_question):
     # Query the pre-initialized agent for a response
-    if "agent" in st.session_state and st.session_state.agent is not None:
+    if "agent" in st.session_state and st.session_state.agent is not None or "query_engine" in st.session_state and st.session_state.query_engine is not None:
 
         session_state = {
         'agent': st.session_state.agent,
-        'file_paths': [],  
+        'query_engine' : st.session_state.query_engine,
+        'file_paths': [],
+        'urls' : st.session_state.urls,  
         'chat_history': st.session_state.chat_history  
         }
        
@@ -118,8 +144,22 @@ def handle_user_input(user_question):
     return result
 
 
+#TODO work on the indexing
+def process_documents(urls: list):
+
+    documents = SimpleWebPageReader(html_to_text=True).load_data(urls)
+
+    index = SummaryIndex.from_documents(documents)
+    
+    query_engine = index.as_query_engine()
+
+    st.session_state.query_engine = query_engine
+    st.write("Agent is set up and ready to answer questions.")
+
+    return query_engine
 
 
+# old implementation
 def setup_agent(uploaded_files):
 
     llm = OpenAI(model="gpt-4-turbo", temperature=0)
@@ -138,6 +178,26 @@ def setup_agent(uploaded_files):
     st.write("Agent is set up and ready to answer questions.")
 
 
+def setup_agent_urls(urls):
+
+    llm = OpenAI(model="gpt-4-turbo", temperature=0)
+
+    # temp_dir = './temp/'
+    # if not os.path.exists(temp_dir):
+    #     os.makedirs(temp_dir)
+    #file_paths = [save_file(uploaded_file, temp_dir) for uploaded_file in uploaded_files]
+    # file_to_tools_dict = {file_path: get_doc_tools(file_path, Path(file_path).stem) for file_path in file_paths}
+   
+    # initial_tools = [tool for tools in file_to_tools_dict.values() for tool in tools]
+    # agent_worker = FunctionCallingAgentWorker.from_tools(initial_tools, llm=llm, verbose=True)
+
+
+    query_engine = process_documents(urls)
+    st.session_state.query_engine = query_engine
+    
+
+
+
 
 def save_file(uploaded_file, temp_dir):
     file_path = os.path.join(temp_dir, uploaded_file.name)
@@ -152,23 +212,9 @@ def save_file(uploaded_file, temp_dir):
 
     
 
-def get_parser():
-    instruction = """
-    The provided document is a financial report of a large company.
-    This form provides detailed financial information about the company's performance.
-    It includes unaudited financial statements, management discussion and analysis, and other relevant disclosures.
-    It contains many tables.
-    Be precise while answering the questions."""
-    return LlamaParse(
-        api_key=os.getenv("LLAMA_PARSE"),
-        result_type="markdown",
-        parsing_instruction=instruction,
-        max_timeout=5000,
-    )
 
 
-
-
+#TODO 
 def return_sources(response):
     sources = []
     logging.info(f"__________________ENTERING  THE RETURN SOURCE FUNC __________________-")

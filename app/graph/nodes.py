@@ -25,9 +25,9 @@ def retrieve(state):
     session_state = state.get("session_state", {})
 
     # Access the agent and chat_history from session_state
-    agent = session_state.get("agent", None)
+    query_engine = session_state.get("query_engine", None)
 
-    response = agent.query(question)
+    response = query_engine.query(question)
   
     documents = nodes_to_documents(response)
 
