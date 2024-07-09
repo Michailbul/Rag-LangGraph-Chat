@@ -43,38 +43,27 @@ def main():
 
 
 
-    #remove later 
+    #upload links
     with st.sidebar:
         st.subheader("Your Links")
         urls = st.text_area("Enter your URLs (one per line)", height=150)
         process = st.button("Process")
     url_list = [url.strip() for url in urls.split('\n') if url.strip()]
-# 
-    if process and url_list:
-        #st.write(f"Processing {len(url_list)} URLs:")
-        for url in url_list:
-            st.write(url)
-# 
-    # # Read URLs from file
-    # urls = read_urls_from_file('temus_urls.txt')
-    # st.session_state.urls = urls
-    # url_list = [url.strip() for url in urls if url.strip()]
+
     
     if not url_list:
         st.warning("Error, no links")
     else:
         with st.expander(f"View Processing URLs ({len(url_list)})"):
-        #setup_agent(uploaded_files)
             st.write(f"Processing {len(url_list)} URLs:")
             for url in url_list:
                 st.write(url)
             setup_agent_urls(url_list)
-        #query_engine = process_documents(uploaded_files, url_list)
-    st.write("Agent is set up and ready to answer questions.")
+        
 
     # Handle user input and display conversation using chat_message
     user_query = st.chat_input("Type your message here...")
-    #st.write(user_query)
+    
     if user_query:
         st.session_state.chat_history.append(HumanMessage(content=user_query))
         if st.session_state.query_engine:
@@ -182,17 +171,8 @@ def setup_agent_urls(urls):
 
     llm = OpenAI(model="gpt-4-turbo", temperature=0)
 
-    # temp_dir = './temp/'
-    # if not os.path.exists(temp_dir):
-    #     os.makedirs(temp_dir)
-    #file_paths = [save_file(uploaded_file, temp_dir) for uploaded_file in uploaded_files]
-    # file_to_tools_dict = {file_path: get_doc_tools(file_path, Path(file_path).stem) for file_path in file_paths}
-   
-    # initial_tools = [tool for tools in file_to_tools_dict.values() for tool in tools]
-    # agent_worker = FunctionCallingAgentWorker.from_tools(initial_tools, llm=llm, verbose=True)
-
-
     query_engine = process_documents(urls)
+
     st.session_state.query_engine = query_engine
     
 
