@@ -1,10 +1,10 @@
 # LangGraph ChatBot
 
 ## Overview
-LangGraph ChatBot is a Streamlit-based web application that integrates LLMs to interact with users dynamically. It leverages the llama_index library for document retrieval and query handling, enhancing user interaction by providing intelligent responses based on a rich document set. We use LlamParser for unstructured pdf processing, LangGraph and LLama Index to make use of Agentic RAG workflow
+LangGraph ChatBot is a Streamlit-based web application that integrates LLMs to interact with users dynamically. It leverages the llama_index library for document retrieval and query handling, enhancing user interaction by providing intelligent responses based on a rich document set. We use LlamParser for htnl processing, LangGraph and LLama Index to make use of Agentic RAG workflow
 
 ## Features
-- Upload PDF documents for context-aware conversation.
+- Upload URLs for context-aware conversation.
 - Query large language models for information extraction.
 
 
@@ -23,11 +23,18 @@ LANGCHAIN_API_KEY=lsv2_yourkey (if want to track the trace) \n
 
 Clone the repository:
 
-git clone https://your-repository-url.git
+`git clone https://github.com/Michailbul/Rag-LangGraph-Chat/tree/ChatWithHTML`
 
-cd LangGraph-ChatBot
+
+`cd Rag-LangGraph-Chat`
+
+
 Install the required Python packages:
+`pip install -r -requirements.txt`
 
+To run the app:
+
+`streamlit run main.py`
 
 ## Dockerization 
 
