@@ -9,7 +9,7 @@ def setup_environment():
     
     #os.environ["QDRANT_URL"] = os.getenv("QDRANT_URL")
     #os.environ["QDRANT_API_KEY"] = os.getenv("QDRANT_API_KEY")
-    os.environ["LLAMA_PARSE"] = os.getenv("LLAMA_PARSE")
+    #os.environ["LLAMA_PARSE"] = os.getenv("LLAMA_PARSE")
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
     os.environ["LANGCHAIN_TRACING_V2"] = "true"
     os.environ["LANGCHAIN_PROJECT"] = "TEMUS TEST"

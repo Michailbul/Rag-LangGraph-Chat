@@ -51,14 +51,17 @@ def main():
     url_list = [url.strip() for url in urls.split('\n') if url.strip()]
 
     
-    if not url_list:
-        st.warning("Error, no links")
-    else:
-        with st.expander(f"View Processing URLs ({len(url_list)})"):
-            st.write(f"Processing {len(url_list)} URLs:")
-            for url in url_list:
-                st.write(url)
-            setup_agent_urls(url_list)
+    
+    if process:
+        if not url_list:
+            st.warning("Error, no links")
+        else:
+            st.session_state.urls = url_list  # Update the session state
+            with st.expander(f"View Processing URLs ({len(url_list)})"):
+                st.write(f"Processing {len(url_list)} URLs:")
+                for url in url_list:
+                    st.write(url)
+                setup_agent_urls(url_list)
         
 
     # Handle user input and display conversation using chat_message
@@ -89,10 +92,6 @@ def main():
             with st.chat_message("Human"):
                 st.markdown(message.content)
 
-def read_urls_from_file(file_path):
-    with open(file_path, 'r') as file:
-        return [url.strip() for url in file if url.strip()]
-    
 def add_custom_css():
     custom_css = """
     <style>
@@ -126,7 +125,6 @@ def handle_user_input(user_question):
         'urls' : st.session_state.urls,  
         'chat_history': st.session_state.chat_history  
         }
-       
         
         result = app.invoke({"question": user_question, "session_state" : session_state})
       
@@ -148,23 +146,20 @@ def process_documents(urls: list):
     return query_engine
 
 
-# old implementation
-def setup_agent(uploaded_files):
-
-    llm = OpenAI(model="gpt-4-turbo", temperature=0)
-
-    temp_dir = './temp/'
-    if not os.path.exists(temp_dir):
-        os.makedirs(temp_dir)
-    
-    file_paths = [save_file(uploaded_file, temp_dir) for uploaded_file in uploaded_files]
-    file_to_tools_dict = {file_path: get_doc_tools(file_path, Path(file_path).stem) for file_path in file_paths}
+# # old implementation
+# def setup_agent(uploaded_files):
+#     llm = OpenAI(model="gpt-4-turbo", temperature=0
+#     temp_dir = './temp/'
+#     if not os.path.exists(temp_dir):
+#         os.makedirs(temp_dir)
+#     file_paths = [save_file(uploaded_file, temp_dir) for uploaded_file in uploaded_files]
+#     file_to_tools_dict = {file_path: get_doc_tools(file_path, Path(file_path).stem) for file_path in file_paths}
    
-    initial_tools = [tool for tools in file_to_tools_dict.values() for tool in tools]
-    agent_worker = FunctionCallingAgentWorker.from_tools(initial_tools, llm=llm, verbose=True)
+#     initial_tools = [tool for tools in file_to_tools_dict.values() for tool in tools]
+#     agent_worker = FunctionCallingAgentWorker.from_tools(initial_tools, llm=llm, verbose=True)
 
-    st.session_state.agent = AgentRunner(agent_worker)
-    st.write("Agent is set up and ready to answer questions.")
+#     st.session_state.agent = AgentRunner(agent_worker)
+#     st.write("Agent is set up and ready to answer questions.")
 
 
 def setup_agent_urls(urls):
@@ -176,21 +171,6 @@ def setup_agent_urls(urls):
     st.session_state.query_engine = query_engine
     
 
-
-
-
-def save_file(uploaded_file, temp_dir):
-    file_path = os.path.join(temp_dir, uploaded_file.name)
-    # Check if the file already exists and delete it if it does
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        logging.info(f"Deleted existing file: {file_path}")
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getvalue())
-    logging.info(f"Processed uploaded file: {uploaded_file.name}")
-    return file_path
-
-    
 
 
 
@@ -216,8 +196,6 @@ def return_sources(response):
                 }
                 sources.append(file_info)
                 print(f"Source Document: {file_info}")
-
-
         return None
     
     return sources

@@ -14,18 +14,11 @@ from llama_index.core.tools import FunctionTool, QueryEngineTool
 from llama_index.core.vector_stores import MetadataFilters, FilterCondition
 from typing import List, Optional
 import textwrap
-
-
-
-
 from llama_index.readers.web import SimpleWebPageReader
-
-
-
 import os 
 import logging
 
-Settings.llm = OpenAI(model="gpt-4-turbo")
+Settings.llm = OpenAI(model="gpt-4o-mini")
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
 
 def create_nodes(file_path):
@@ -36,9 +29,6 @@ def create_nodes(file_path):
     It includes management, descriptions, and other relevant disclosures.
     Be precise while answering the questions.
     Always provide reasoning over your answer, providing sources and all the relevant information that led to this answer"""
-
-
-
 
     # instruction = """The provided document is a financial report of a large company.
     # This form provides detailed financial information about the company's performance.
@@ -71,10 +61,6 @@ def create_nodes(file_path):
 
 
     
-
-
-
-
 def create_vector_index(file_path):
 
     nodes = create_nodes(file_path)

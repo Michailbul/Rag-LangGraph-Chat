@@ -1,4 +1,5 @@
 langchain
+langchain-core
 langchain-community
 langchain-openai
 llama-parse
@@ -12,3 +13,5 @@ llama-index-llms-openai
 llama-index-core
 llama-index-embeddings-openai
 llama-index-readers-web
+pytest
+pytest-asyncio

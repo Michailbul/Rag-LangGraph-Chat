@@ -4,7 +4,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 ### Answer enhancer
 
-llm = ChatOpenAI(model="gpt-4o", temperature=0)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 
 # Prompt
